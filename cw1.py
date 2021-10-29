@@ -1,21 +1,24 @@
-from _typeshed import Self
+
+# importing my rotors and reflectors file
 from rotor import *
 
 
 class Enigma:
 
-    def __init__(self, rotors):
-        pass
+    def __init__(self, rotors, reflector):
+        self.encoded_msg = ""
         # self.plugboard = plugboard
 
     # Encodes a Message
     def encode(self, msg):
 
-        # msg will be the message input
-        new_msg = ""
+        # take input from user
+        self.encoded_msg = ""
         for i in range(len(msg)):
+            # rotation of rotor after each letter
             rotorI.append(rotorI.pop(0))
 
+            # take the index of the first letter of the msg in the alphabet list & corespond it to the first rotor chosen
             index = alphabet.index(msg[i])
             encrypted = rotors[0][index]
 
@@ -37,9 +40,12 @@ class Enigma:
             index = alphabet.index(encrypted)
             encrypted = rotors[0][index]
 
-            new_msg += encrypted
+            # adds letter by letter to the encoded msg
+            self.encoded_msg += encrypted
 
-        print(new_msg)
+    # returns encoded msg
+    def get_encoded_msg(self):
+        return self.encoded_msg
 
     # # reset machine settings
     # def reset(self, rotors):
@@ -56,41 +62,42 @@ class Plugboard:
 
 class Rotors:
 
-    def __init__(self, first_rotor, mid_rotor, last_rotor, reflector, rotors):
+    def __init__(self, first_rotor, mid_rotor, last_rotor, rotors):
         self.first_rotor = first_rotor
         self.mid_rotor = mid_rotor
         self.last_rotor = last_rotor
-        self.reflector = reflector
+        # self.reflector = reflector
         self.rotors = rotors
 
     # starting point
-    def starting_point(self):
-        starting_r1 = int(input(
-            'Choose 3 letters for the starting point (eg. 13): '))
+    def ring_setting(self):
+        # take user input for the starting letter in the first rotor
+        r1 = int(input(
+            'Choose first letters for the starting point (eg. 13): '))
 
-        for i in range(starting_r1):
-            self.rotors[0].append(self.rotors[0].pop(0))
+        # rotate the first rotor to the starting point
+        self.rotors[0].append(self.rotors[0].pop(r1 + 1))
 
-        starting_r2 = int(input(
+        r2 = int(input(
             'Choose 3 letters for the starting point (eg. 1): '))
 
-        for i in range(starting_r2):
-            self.rotors[1].append(self.rotors[1].pop(0))
+        # rotate the second rotor to the starting point
+        self.rotors[1].append(self.rotors[1].pop(r2 + 1))
 
-        starting_r3 = int(input(
+        r3 = int(input(
             'Choose 3 letters for the starting point (eg. 20): '))
 
-        for i in range(starting_r3):
-            self.rotors[2].append(self.rotors[2].pop(0))
+        # rotate the third rotor to the starting point
+        self.rotors[2].append(self.rotors[2].pop(r3 + 1))
 
 
 class Reflector:
 
     def __init__(self, reflector):
-        Self.reflector = reflector
-        pass
+        self.reflector = reflector
 
         # forward
+
     def forward(self):
         pass
 
@@ -155,14 +162,14 @@ while(selection != 5):
         else:
             print("choice is invalid")
 
-        x = Rotors(first_rotor, second_rotor, third_rotor, reflector, rotors)
-        # r = Reflector(reflector)
+        x = Rotors(first_rotor, second_rotor, third_rotor, rotors)
+        r = Reflector(reflector)
 
-        x.starting_point()
-        # r.reflector()
+        x.ring_setting()
 
         msg = input("Enter your Message: ")
 
-        y = Enigma(rotors)
+        enigma_mahcine = Enigma(rotors, reflector)
 
-        y.encode(msg.upper())
+        enigma_mahcine.encode(msg.upper())
+        print(enigma_mahcine.get_encoded_msg())

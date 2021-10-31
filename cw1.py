@@ -1,6 +1,6 @@
 
 # importing the rotors and reflectors file
-from rotor import *
+from rotortest import *
 
 
 class Enigma:
@@ -11,17 +11,19 @@ class Enigma:
 
     # Encodes a Message
     def encode(self, msg):
-
-        # take input from user
+        # define variables
         self.encoded_msg = ""
         self.rotor1_rotation = 0
         self.rotor2_rotation = 0
 
+        # take input from user
         for i in range(len(msg)):
+            # return the space as is
             if msg[i] == ' ':
                 self.encoded_msg += ' '
 
             else:
+                # rotate the rotors after every letter
                 self.rotation()
 
                 # take the index of the first letter of the msg in the alphabet list
@@ -42,7 +44,7 @@ class Enigma:
                 # correspond it to the letter in the reflector
                 encrypted = reflectorB[index]
 
-                # check the mapping of the letter
+                # check the mapping of the letter in the reflection
                 for x in reflectorB_map:
                     if x[0] == encrypted:
                         encrypted = x[1]
@@ -74,19 +76,22 @@ class Enigma:
                 self.encoded_msg += encrypted
 
     def rotation(self):
-        # rotation of rotor after each letter
+        # rotation of rotor1
         Rotors.rotate(0)
 
-        # incremenate after each letter
+        # incriminate after each letter in rotor1
         self.rotor1_rotation += 1
 
-        # rotate second rotor after full rotation of first rotor
-        if self.rotor1_rotation == 25:
+        # rotate rotor2 after full rotation of rotor1
+        if self.rotor1_rotation == 60:
             Rotors.rotate(1)
+            # reset the inrimintation
             self.rotor1_rotation = 0
+            # incriminate after each letter in rotor2
             self.rotor2_rotation += 1
-        # rotate third rotor after full rotation of second rotor
-        if self.rotor2_rotation == 25:
+
+        # rotate rotor3 after full rotation of rotor2
+        if self.rotor2_rotation == 60:
             self.rotor2_rotation = 0
             Rotors.rotate(2)
 
@@ -97,7 +102,7 @@ class Enigma:
     def get_encoded_msg(self):
         return self.encoded_msg
 
-    # returns encoded msg
+    # returns dencoded msg
     def get_decoded_msg(self):
         return self.encoded_msg
 
@@ -118,6 +123,8 @@ class Rotors:
         self.rotors = rotors
 
     def rotor_order(self, rotors):
+
+        # take user input to choose the first rotor
         first_rotor = input('choose 1st rotor (ex: I): ')
         if first_rotor == 'I':
             rotors.append(rotorI)
@@ -130,6 +137,7 @@ class Rotors:
         else:
             print("choice is invalid")
 
+        # take user input to choose the second rotor
         second_rotor = input('choose 2nd rotor (ex: I): ')
         if second_rotor == 'I':
             rotors.append(rotorI)
@@ -142,8 +150,8 @@ class Rotors:
         else:
             print("choice is invalid")
 
+        # take user input to choose the third rotor
         third_rotor = input('choose 3rd rotor (ex: I): ')
-
         if third_rotor == 'I':
             rotors.append(rotorI)
         elif third_rotor == 'II':
@@ -180,18 +188,25 @@ class Rotors:
             rotors[2].append(rotors[2].pop(0))
 
     def rotate(index):
+        # rotation of rotors function
         rotors[index].append(rotors[index].pop(0))
 
     def reset(self):
+        # reset function
+
+        # rotate first rotor till the first index is E
         while rotorI[0] != 'E':
             rotorI.append(rotorI.pop(0))
 
+        # rotate second rotor till the first index is A
         while rotorII[0] != 'A':
             rotorII.append(rotorII.pop(0))
 
+        # rotate third rotor till the first index is B
         while rotorIII[0] != 'B':
             rotorIII.append(rotorIII.pop(0))
 
+        # rotate fourth rotor till the first index is E
         while rotorIV[0] != 'E':
             rotorIV.append(rotorIV.pop(0))
 
@@ -201,6 +216,10 @@ class Reflector:
     def __init__(self, reflector):
         self.reflector = reflector
 
+
+rotors = []
+Enigma_mahcine = Enigma(rotors, reflectorB)
+Rotor_class = Rotors(rotors)
 
 print("This is an enigma machine, please select what you need to do by inserting the corresponding number")
 
@@ -212,41 +231,33 @@ while(selection != 4):
     print("4: Exit the program \n")
 
     selection = int(input("Enter your selection: "))
-    rotors = []
 
     if selection == 1:
 
-        enigma_mahcine = Enigma(rotors, reflectorB)
-
-        x = Rotors(rotors)
-
-        x.rotor_order(rotors)
-        x.starting_point(rotors, rotors[0], rotors[1], rotors[2])
-
-        print(rotors[0])
-        print(rotors[1])
-        print(rotors[2])
+        Rotor_class.reset()
+        Rotor_class.rotor_order(rotors)
+        Rotor_class.starting_point(rotors, rotors[0], rotors[1], rotors[2])
 
         msg = input("Enter your Message: ")
 
-        enigma_mahcine.encode(msg.upper())
-        print(enigma_mahcine.get_encoded_msg())
-        print(rotors[0])
-        print(rotors[1])
-        print(rotors[2])
+        Enigma_mahcine.encode(msg)
+        print(Enigma_mahcine.get_encoded_msg())
+
+        print(rotors[0], "\n")
+        print(rotors[1], "\n")
+        print(rotors[2], "\n")
 
     elif selection == 2:
-        decode = Enigma(rotors, reflectorB)
-        x = Rotors(rotors)
 
-        x.reset()
-        x.rotor_order(rotors)
-        x.starting_point(rotors, rotors[0], rotors[1], rotors[2])
-
-        print(rotors[0])
-        print(rotors[1])
-        print(rotors[2])
+        Rotor_class.reset()
+        Rotor_class.rotor_order(rotors)
+        Rotor_class.starting_point(rotors, rotors[0], rotors[1], rotors[2])
 
         msg = input("Enter your Message: ")
-        decode.decode()
-        print(decode.get_decoded_msg())
+
+        Enigma_mahcine.decode()
+        print(Enigma_mahcine.get_decoded_msg())
+
+        print(rotors[0], "\n")
+        print(rotors[1], "\n")
+        print(rotors[2], "\n")

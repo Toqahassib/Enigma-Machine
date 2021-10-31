@@ -1,5 +1,5 @@
 
-# importing my rotors and reflectors file
+# importing the rotors and reflectors file
 from rotor import *
 
 
@@ -7,6 +7,8 @@ class Enigma:
 
     def __init__(self, rotors, reflector):
         self.encoded_msg = ""
+        self.count = 0
+        self.count2 = 0
         # self.plugboard = plugboarD
 
     # Encodes a Message
@@ -14,67 +16,79 @@ class Enigma:
 
         # take input from user
         self.encoded_msg = ""
-        count = 0
-        count2 = 0
+        rotor1_rotation = 0
+        rotor2_rotation = 0
 
         for i in range(len(msg)):
-            self.rotation(count, count2)
+            if msg[i] == ' ':
+                self.encoded_msg += ' '
 
-            # take the index of the first letter of the msg in the alphabet list & corespond it to the first rotor chosen
-            index = alphabet.index(msg[i])
-            encrypted = rotors[0][index]
+            else:
+                self.rotation(rotor1_rotation, rotor2_rotation)
 
-            index = alphabet.index(encrypted)
-            encrypted = rotors[1][index]
+                # take the index of the first letter of the msg in the alphabet list
+                index = alphabet.index(msg[i])
+                # correspond it to the letter in the first rotor
+                encrypted = rotors[0][index]
 
-            index = alphabet.index(encrypted)
-            encrypted = rotors[2][index]
+                # change the index to the coresponding letter in the alphabet list
+                index = alphabet.index(encrypted)
+                # correspond it to the letter in the second rotor
+                encrypted = rotors[1][index]
 
-            index = alphabet.index(encrypted)
-            encrypted = reflectorB[index]
+                index = alphabet.index(encrypted)
+                # correspond it to the letter in the third rotor
+                encrypted = rotors[2][index]
 
-            for x in reflectorB_map:
-                if x[0] == encrypted:
-                    encrypted = x[1]
+                index = alphabet.index(encrypted)
+                # correspond it to the letter in the reflector
+                encrypted = reflectorB[index]
 
-                elif x[1] == encrypted:
-                    encrypted = x[0]
+                # check the mapping of the letter
+                for x in reflectorB_map:
+                    if x[0] == encrypted:
+                        encrypted = x[1]
 
-            index = reflectorB.index(encrypted)
-            encrypted = alphabet[index]
+                    elif x[1] == encrypted:
+                        encrypted = x[0]
 
-            index = rotors[2].index(encrypted)
-            encrypted = rotors[2][index]
-            encrypted = alphabet[index]
+                # change the index to the coresponding letter in the refelector list
+                index = reflectorB.index(encrypted)
+                # correspond it to the letter in the alphabet
+                encrypted = alphabet[index]
 
-            index = rotors[1].index(encrypted)
-            encrypted = rotors[1][index]
-            encrypted = alphabet[index]
+                # change the index to the coresponding letter in the third rotor
+                index = rotors[2].index(encrypted)
+                # correspond it to the letter in the second rotor
+                encrypted = rotors[2][index]
+                # correspond it to the letter in the alphabet list
+                encrypted = alphabet[index]
 
-            index = rotors[0].index(encrypted)
-            encrypted = rotors[0][index]
-            encrypted = alphabet[index]
+                index = rotors[1].index(encrypted)
+                encrypted = rotors[1][index]
+                encrypted = alphabet[index]
 
-            # adds letter by letter to the encoded msg
-            self.encoded_msg += encrypted
+                index = rotors[0].index(encrypted)
+                encrypted = rotors[0][index]
+                encrypted = alphabet[index]
 
-    def rotation(self, count, count2):
+                # adds letter by letter to the encoded msg
+                self.encoded_msg += encrypted
+
+    def rotation(self, rotor1_rotation, rotor2_rotation):
         # rotation of rotor after each letter
         Rotors.rotate(0)
-        count += 1
-
+        rotor1_rotation += 1
+        print(rotor1_rotation)
         # rotate second rotor after full rotation of first rotor
-        while count == 25:
-            count = 0
+        if rotor1_rotation == 25:
             Rotors.rotate(1)
-            count2 += 1
-            break
-
+            rotor1_rotation = 0
+            rotor2_rotation += 1
         # rotate third rotor after full rotation of second rotor
-        while count2 == 25:
-            count2 = 0
+        if rotor2_rotation == 25:
+            rotor2_rotation = 0
             Rotors.rotate(2)
-            break
 
     def decode(self):
         # Enigma.reset(self)
@@ -87,12 +101,6 @@ class Enigma:
     # returns encoded msg
     def get_decoded_msg(self):
         return self.encoded_msg
-
-    # reset machine settings
-    def reset(self, rotors):
-        self.rotors = []
-        print(self.rotors[0])
-        self.rotors[0] = []
 
 
 class Plugboard:
@@ -173,7 +181,6 @@ class Rotors:
             rotors[2].append(rotors[2].pop(0))
 
     def rotate(index):
-
         rotors[index].append(rotors[index].pop(0))
 
 
@@ -182,21 +189,15 @@ class Reflector:
     def __init__(self, reflector):
         self.reflector = reflector
 
-        # forward
-
-    def forward(self):
-        pass
-
 
 print("This is an enigma machine, please select what you need to do by inserting the corresponding number")
 
 selection = 0
-while(selection != 5):
+while(selection != 4):
     print("\n1: Encode a Message ")
     print("2: Decode a Message ")
     print("3: Plugboard settings ")
-    print("4: Decode a Message ")
-    print("5: Exit the program \n")
+    print("4: Exit the program \n")
 
     selection = int(input("Enter your selection: "))
     rotors = []
@@ -226,7 +227,6 @@ while(selection != 5):
         decode = Enigma(rotors, reflectorB)
         x = Rotors(rotors)
 
-        # decode.reset(rotors)
         print(rotors)
 
         x.rotor_order(rotors)

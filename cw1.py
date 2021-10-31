@@ -7,8 +7,6 @@ class Enigma:
 
     def __init__(self, rotors, reflector):
         self.encoded_msg = ""
-        self.count = 0
-        self.count2 = 0
         # self.plugboard = plugboarD
 
     # Encodes a Message
@@ -16,15 +14,15 @@ class Enigma:
 
         # take input from user
         self.encoded_msg = ""
-        rotor1_rotation = 0
-        rotor2_rotation = 0
+        self.rotor1_rotation = 0
+        self.rotor2_rotation = 0
 
         for i in range(len(msg)):
             if msg[i] == ' ':
                 self.encoded_msg += ' '
 
             else:
-                self.rotation(rotor1_rotation, rotor2_rotation)
+                self.rotation()
 
                 # take the index of the first letter of the msg in the alphabet list
                 index = alphabet.index(msg[i])
@@ -75,19 +73,19 @@ class Enigma:
                 # adds letter by letter to the encoded msg
                 self.encoded_msg += encrypted
 
-    def rotation(self, rotor1_rotation, rotor2_rotation):
+    def rotation(self):
         # rotation of rotor after each letter
         Rotors.rotate(0)
-        rotor1_rotation += 1
-        print(rotor1_rotation)
+        self.rotor1_rotation += 1
+        print(self.rotor1_rotation)
         # rotate second rotor after full rotation of first rotor
-        if rotor1_rotation == 25:
+        if self.rotor1_rotation == 25:
             Rotors.rotate(1)
-            rotor1_rotation = 0
-            rotor2_rotation += 1
+            self.rotor1_rotation = 0
+            self.rotor2_rotation += 1
         # rotate third rotor after full rotation of second rotor
-        if rotor2_rotation == 25:
-            rotor2_rotation = 0
+        if self.rotor2_rotation == 25:
+            self.rotor2_rotation = 0
             Rotors.rotate(2)
 
     def decode(self):

@@ -14,9 +14,11 @@ class Enigma:
 
         # take input from user
         self.encoded_msg = ""
+        count = 0
+        count2 = 0
+
         for i in range(len(msg)):
-            # rotation of rotor after each letter
-            # rotors[0].append(rotors[0].pop(0))
+            self.rotation(count, count2)
 
             # take the index of the first letter of the msg in the alphabet list & corespond it to the first rotor chosen
             index = alphabet.index(msg[i])
@@ -56,13 +58,26 @@ class Enigma:
             # adds letter by letter to the encoded msg
             self.encoded_msg += encrypted
 
+    def rotation(self, count, count2):
+        # rotation of rotor after each letter
+        Rotors.rotate(0)
+        count += 1
+
+        # rotate second rotor after full rotation of first rotor
+        while count == 25:
+            count = 0
+            Rotors.rotate(1)
+            count2 += 1
+            break
+
+        # rotate third rotor after full rotation of second rotor
+        while count2 == 25:
+            count2 = 0
+            Rotors.rotate(2)
+            break
+
     def decode(self):
-        Rotors.reset(self)
-
-        print(rotors[0])
-        print(rotors[1])
-        print(rotors[2])
-
+        # Enigma.reset(self)
         self.encode(msg)
 
     # returns encoded msg
@@ -73,10 +88,11 @@ class Enigma:
     def get_decoded_msg(self):
         return self.encoded_msg
 
-    # # reset machine settings
-    # def reset(self, rotors):
-    #     for rotor in rotors:
-    #         rotor.reset()
+    # reset machine settings
+    def reset(self, rotors):
+        self.rotors = []
+        print(self.rotors[0])
+        self.rotors[0] = []
 
 
 class Plugboard:
@@ -92,7 +108,6 @@ class Rotors:
         self.first_rotor = ""
         self.mid_rotor = ""
         self.last_rotor = ""
-        self.reset()
         self.rotors = rotors
 
     def rotor_order(self, rotors):
@@ -134,14 +149,11 @@ class Rotors:
             print("choice is invalid")
 
     def starting_point(self, rotors, first_rotor, second_rotor, third_rotor):
-        rotors[0] = first_rotor
-        rotors[1] = second_rotor
-        rotors[2] = third_rotor
 
         # take user input for the starting letter in the first rotor
         r1 = int(input(
             'Choose first letters for the starting point (eg. 13): '))
-        # rotors[0] = rotors[0]
+
         # rotate the first rotor to the starting point
         for i in range(r1 - 1):
             rotors[0].append(rotors[0].pop(0))
@@ -149,7 +161,6 @@ class Rotors:
         r2 = int(input(
             'Choose 3 letters for the starting point (eg. 1): '))
 
-        # rotors[1] = rotors[1]
         # rotate the second rotor to the starting point
         for i in range(r2 - 1):
             rotors[1].append(rotors[1].pop(0))
@@ -157,20 +168,13 @@ class Rotors:
         r3 = int(input(
             'Choose 3 letters for the starting point (eg. 20): '))
 
-        # rotors[2] = rotors[2]
         for i in range(r3 - 1):
             # rotate the third rotor to the starting point
             rotors[2].append(rotors[2].pop(0))
 
-    def reset(self):
-        """
-        re-initialize the rotor to its initial configuration
+    def rotate(index):
 
-        Returns: void
-        """
-        self.r1 = 1
-        self.r2 = 1
-        self.r3 = 1
+        rotors[index].append(rotors[index].pop(0))
 
 
 class Reflector:
@@ -199,8 +203,9 @@ while(selection != 5):
 
     if selection == 1:
 
+        enigma_mahcine = Enigma(rotors, reflectorB)
+
         x = Rotors(rotors)
-        r = Reflector(reflectorB)
 
         x.rotor_order(rotors)
         x.starting_point(rotors, rotors[0], rotors[1], rotors[2])
@@ -210,16 +215,19 @@ while(selection != 5):
         print(rotors[2])
 
         msg = input("Enter your Message: ")
-
-        enigma_mahcine = Enigma(rotors, reflectorB)
 
         enigma_mahcine.encode(msg.upper())
         print(enigma_mahcine.get_encoded_msg())
+        print(rotors[0])
+        print(rotors[1])
+        print(rotors[2])
 
     elif selection == 2:
-
+        decode = Enigma(rotors, reflectorB)
         x = Rotors(rotors)
-        r = Reflector(reflectorB)
+
+        # decode.reset(rotors)
+        print(rotors)
 
         x.rotor_order(rotors)
         x.starting_point(rotors, rotors[0], rotors[1], rotors[2])
@@ -229,6 +237,5 @@ while(selection != 5):
         print(rotors[2])
 
         msg = input("Enter your Message: ")
-        decode = Enigma(rotors, reflectorB)
         decode.decode()
         print(decode.get_decoded_msg())

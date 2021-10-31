@@ -76,8 +76,10 @@ class Enigma:
     def rotation(self):
         # rotation of rotor after each letter
         Rotors.rotate(0)
+
+        # incremenate after each letter
         self.rotor1_rotation += 1
-        print(self.rotor1_rotation)
+
         # rotate second rotor after full rotation of first rotor
         if self.rotor1_rotation == 25:
             Rotors.rotate(1)
@@ -89,7 +91,6 @@ class Enigma:
             Rotors.rotate(2)
 
     def decode(self):
-        # Enigma.reset(self)
         self.encode(msg)
 
     # returns encoded msg
@@ -181,6 +182,19 @@ class Rotors:
     def rotate(index):
         rotors[index].append(rotors[index].pop(0))
 
+    def reset(self):
+        while rotorI[0] != 'E':
+            rotorI.append(rotorI.pop(0))
+
+        while rotorII[0] != 'A':
+            rotorII.append(rotorII.pop(0))
+
+        while rotorIII[0] != 'B':
+            rotorIII.append(rotorIII.pop(0))
+
+        while rotorIV[0] != 'E':
+            rotorIV.append(rotorIV.pop(0))
+
 
 class Reflector:
 
@@ -225,8 +239,7 @@ while(selection != 4):
         decode = Enigma(rotors, reflectorB)
         x = Rotors(rotors)
 
-        print(rotors)
-
+        x.reset()
         x.rotor_order(rotors)
         x.starting_point(rotors, rotors[0], rotors[1], rotors[2])
 

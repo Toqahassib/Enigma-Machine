@@ -1,33 +1,37 @@
-
-# importing the rotors and reflectors file
-from rotortest import *
+# importing the rotors, reflectors and plugboard file
+from rotor import *
+from plugboard import *
 
 
 class Enigma:
 
-    def __init__(self, rotors, reflector):
-        self.encoded_msg = ""
+    def __init__(self, rotors, reflector, msg):
+        self.rotors = rotors
+        self.reflector = reflector
+        self.encoded_msg = msg.new_msg
+        self.cipher = str()
         # self.plugboard = plugboarD
 
     # Encodes a Message
     def encode(self, msg):
         # define variables
-        self.encoded_msg = ""
+        # self.encoded_msg = ""
+
         self.rotor1_rotation = 0
         self.rotor2_rotation = 0
 
         # take input from user
-        for i in range(len(msg)):
+        for i in range(len(self.encoded_msg)):
             # return the space as is
-            if msg[i] == ' ':
-                self.encoded_msg += ' '
+            if not self.encoded_msg[i].isalnum():
+                self.cipher += self.encoded_msg[i]
 
             else:
                 # rotate the rotors after every letter
                 self.rotation()
 
                 # take the index of the first letter of the msg in the alphabet list
-                index = alphabet.index(msg[i])
+                index = alphabet.index(self.encoded_msg[i])
                 # correspond it to the letter in the first rotor
                 encrypted = rotors[0][index]
 
@@ -73,7 +77,7 @@ class Enigma:
                 encrypted = alphabet[index]
 
                 # adds letter by letter to the encoded msg
-                self.encoded_msg += encrypted
+                self.cipher += encrypted
 
     def rotation(self):
         # rotation of rotor1
@@ -99,19 +103,64 @@ class Enigma:
         self.encode(msg)
 
     # returns encoded msg
-    def get_encoded_msg(self):
-        return self.encoded_msg
+    def get_ciphered_msg(self):
+        return self.cipher
 
     # returns dencoded msg
-    def get_decoded_msg(self):
-        return self.encoded_msg
+    def get_deciphered_msg(self):
+        return self.cipher
 
 
 class Plugboard:
-
     # pass through plug board
-    def __init__(self):
-        pass
+
+    def __init__(self, plugboard_chosen, new_msg):
+        self.plugboard_chosen = plugboard_chosen
+        self.new_msg = new_msg
+
+    def plugboard_choice(self, plugboard_chosen):
+        plugboard = int(input('choose your plugboard (29, 30, 31): '))
+        if plugboard == 29:
+            self.plugboard_chosen = plugboard29
+        elif plugboard == 30:
+            self.plugboard_chosen = plugboard30
+        elif plugboard == 31:
+            self.plugboard_chosen = plugboard31
+        else:
+            print("invalid choice")
+
+    def plugboard_configure(self):
+        user_plugboard = []
+
+        count = int(input(
+            "How many pairings will you configure (limit: 10 pairs)? "))
+
+        for i in range(count):
+            x = input('Enter first pair: ')  # '(a,a),(b,b),(c,c),(d,d)'
+
+            for tup in x.split('),('):
+                # tup looks like `(a,a` or `b,b`
+                tup = tup.replace(')', '').replace('(', '')
+                # tup looks like `a,a` or `b,b`
+                user_plugboard.append(tuple(tup.split(',')))
+
+        self.plugboard_chosen = user_plugboard
+
+    def plugboard_default(self, msg):
+        self.new_msg = msg
+
+    def plugboard_settings(self, msg):
+        list_msg = list(msg)
+        for i in range(len(msg)):
+            for x in self.plugboard_chosen:
+                if list_msg[i] == x[0]:
+                    list_msg[i] = x[1]
+                elif list_msg[i] == x[1]:
+                    list_msg[i] = x[0]
+            self.new_msg = "".join(list_msg)
+
+    def get_new_msg(self):
+        return self.new_msg
 
 
 class Rotors:
@@ -163,27 +212,32 @@ class Rotors:
         else:
             print("choice is invalid")
 
-    def starting_point(self, rotors, first_rotor, second_rotor, third_rotor):
+    def starting_point(self, rotors, first_rotor, second_rotor, last_rotor):
 
         # take user input for the starting letter in the first rotor
-        r1 = int(input(
-            'Choose first letters for the starting point (eg. 13): '))
+        r1 = input(
+            'Enter the first letter for the starting point: ')
+        # change the letter to its index
+        starting_letter = rotors[0].index(r1)
 
         # rotate the first rotor to the starting point
-        for i in range(r1 - 1):
+        for i in range(starting_letter):
             rotors[0].append(rotors[0].pop(0))
 
-        r2 = int(input(
-            'Choose 3 letters for the starting point (eg. 1): '))
+        r2 = input(
+            'Enter the second letter for the starting point: ')
+
+        starting_letter = rotors[1].index(r2)
 
         # rotate the second rotor to the starting point
-        for i in range(r2 - 1):
+        for i in range(starting_letter):
             rotors[1].append(rotors[1].pop(0))
 
-        r3 = int(input(
-            'Choose 3 letters for the starting point (eg. 20): '))
+        r3 = input(
+            'Enter the third letter for the starting point: ')
+        starting_letter = rotors[2].index(r3)
 
-        for i in range(r3 - 1):
+        for i in range(starting_letter):
             # rotate the third rotor to the starting point
             rotors[2].append(rotors[2].pop(0))
 
@@ -217,9 +271,13 @@ class Reflector:
         self.reflector = reflector
 
 
-rotors = []
-Enigma_mahcine = Enigma(rotors, reflectorB)
+rotors = list()
+plugboard_chosen = int()
+new_msg = str()
+
 Rotor_class = Rotors(rotors)
+Plugboard_class = Plugboard(plugboard_chosen, new_msg)
+
 
 print("This is an enigma machine, please select what you need to do by inserting the corresponding number")
 
@@ -227,37 +285,60 @@ selection = 0
 while(selection != 4):
     print("\n1: Encode a Message ")
     print("2: Decode a Message ")
-    print("3: Plugboard settings ")
-    print("4: Exit the program \n")
+    print("3: Exit the program \n")
 
     selection = int(input("Enter your selection: "))
 
-    if selection == 1:
+    if selection == 1 or 2:
 
         Rotor_class.reset()
+
         Rotor_class.rotor_order(rotors)
         Rotor_class.starting_point(rotors, rotors[0], rotors[1], rotors[2])
 
-        msg = input("Enter your Message: ")
+        x = input("Do you want to use a plugboard? ")
+        if x == "Y":
+            print("\n1: Choose a preset plugboard ")
+            print("2: Configure a plugboard\n")
 
-        Enigma_mahcine.encode(msg)
-        print(Enigma_mahcine.get_encoded_msg())
+            ans = int(input("Choose one from the above: "))
+            if ans == 1:
+                Plugboard_class.plugboard_choice(plugboard_chosen)
+                msg = input("Enter your Message: ")
 
-        print(rotors[0], "\n")
-        print(rotors[1], "\n")
-        print(rotors[2], "\n")
+                Plugboard_class.plugboard_settings(msg)
+                Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
 
-    elif selection == 2:
+                Enigma_mahcine.encode(msg)
+                cipher = Enigma_mahcine.get_ciphered_msg()
+                Plugboard_class.plugboard_settings(cipher)
 
-        Rotor_class.reset()
-        Rotor_class.rotor_order(rotors)
-        Rotor_class.starting_point(rotors, rotors[0], rotors[1], rotors[2])
+                print(Plugboard_class.get_new_msg())
 
-        msg = input("Enter your Message: ")
+            elif ans == 2:
+                Plugboard_class.plugboard_configure()
+                msg = input("Enter your Message: ")
 
-        Enigma_mahcine.decode()
-        print(Enigma_mahcine.get_decoded_msg())
+                Plugboard_class.plugboard_settings(msg)
+                Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
 
-        print(rotors[0], "\n")
-        print(rotors[1], "\n")
-        print(rotors[2], "\n")
+                Enigma_mahcine.encode(msg)
+
+                cipher = Enigma_mahcine.get_ciphered_msg()
+                Plugboard_class.plugboard_settings(cipher)
+
+                print(Plugboard_class.get_new_msg())
+
+        else:
+
+            msg = input("Enter your Message: ")
+
+            Plugboard_class.plugboard_default(msg)
+            Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
+
+            Enigma_mahcine.encode(msg)
+            print(Enigma_mahcine.get_ciphered_msg())
+
+            print(rotors[0], "\n")
+            print(rotors[1], "\n")
+            print(rotors[2], "\n")

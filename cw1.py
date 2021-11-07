@@ -236,8 +236,7 @@ class Rotors:
 
     #  function to reset rotors to their original state
 
-    def reset(self, rotors):
-        rotors = []
+    def reset(self):
         # rotate first rotor till the first index is E
         while rotorI[0] != "E":
             rotorI.append(rotorI.pop(0))
@@ -260,6 +259,16 @@ class Reflector:
         self.reflector = reflector
 
 
+def save_output():
+    save_output = input("do you want to save the output in a text file? ")
+    if save_output == "y":
+        file_name = input("enter name: ")
+        file = open(file_name, "w")
+
+        file.write(Enigma_mahcine.get_ciphered_msg())
+        file.close()
+
+
 # validation for integer inputs
 
 
@@ -277,7 +286,6 @@ def INTvalidation(text):
 
 rotors = list()
 plugboard_chosen = int()
-msg = str()
 new_msg = str()
 first_rotor = ""
 mid_rotor = ""
@@ -300,7 +308,7 @@ while selection != 3:
     selection = INTvalidation("\nEnter your selection: ")
     if selection == 1 or 2:
         rotors = []
-        Rotor_class.reset(rotors)
+        Rotor_class.reset()
 
         # take user input to choose the first rotor
         first_rotor = INTvalidation("choose 1st rotor (ex: I): ")
@@ -346,6 +354,7 @@ while selection != 3:
 
                     with open(file_name) as f:
                         msg = f.read()
+                        f.close()
 
                 Plugboard_class.plugboard_settings(msg)
                 Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
@@ -355,6 +364,7 @@ while selection != 3:
                 Plugboard_class.plugboard_settings(cipher)
 
                 print(Plugboard_class.get_new_msg())
+                save_output()
 
             elif ans == 2:
                 Plugboard_class.plugboard_configure()
@@ -370,6 +380,7 @@ while selection != 3:
 
                     with open(file_name) as f:
                         msg = f.read()
+                        f.close()
 
                 Plugboard_class.plugboard_settings(msg)
                 Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
@@ -380,6 +391,7 @@ while selection != 3:
                 Plugboard_class.plugboard_settings(cipher)
 
                 print(Plugboard_class.get_new_msg())
+                save_output()
 
         else:
             print("1. Type a message")
@@ -394,6 +406,7 @@ while selection != 3:
 
                 with open(file_name) as f:
                     msg = f.read()
+                    f.close()
 
             Plugboard_class.plugboard_default(msg)
             Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
@@ -401,8 +414,7 @@ while selection != 3:
             Enigma_mahcine.encode(msg)
             print(Enigma_mahcine.get_ciphered_msg())
 
-            # print(rotors[0], "\n")
-            # print(rotors[1], "\n")
-            # print(rotors[2], "\n")
+            save_output()
+
     elif selection == 3:
         quit()

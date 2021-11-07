@@ -4,7 +4,6 @@ from plugboard import *
 
 
 class Enigma:
-
     def __init__(self, rotors, reflector, msg):
         self.rotors = rotors
         self.reflector = reflector
@@ -124,36 +123,33 @@ class Plugboard:
 
     # user chooses from 3 plugboards
     def plugboard_choice(self, plugboard_chosen):
-        plugboard = INTvalidation(
-            'choose your plugboard (29, 30, 31): ')
+        plugboard = INTvalidation("choose your plugboard (29, 30, 31): ")
         while plugboard not in range(29, 32):
             print("\nYou can enter from 29 to 31 ONLY.")
-            plugboard = INTvalidation(
-                'choose your plugboard (29, 30, 31): ')
-            if plugboard == 29:
-                self.plugboard_chosen = plugboard29
-            elif plugboard == 30:
-                self.plugboard_chosen = plugboard30
-            elif plugboard == 31:
-                self.plugboard_chosen = plugboard31
-            else:
-                print("invalid choice")
+            plugboard = INTvalidation("choose your plugboard (29, 30, 31): ")
+        if plugboard == 29:
+            self.plugboard_chosen = plugboard29
+        elif plugboard == 30:
+            self.plugboard_chosen = plugboard30
+        elif plugboard == 31:
+            self.plugboard_chosen = plugboard31
+        else:
+            print("invalid choice")
 
     # user configures their own plugboard
     def plugboard_configure(self):
         user_plugboard = []
 
-        count = INTvalidation(
-            "How many pairings will you configure? ")
+        count = INTvalidation("How many pairings will you configure? ")
 
         for i in range(count):
-            x = input('Enter first pair: ')  # '(a,b),(b,c),(c,d),(d,e)'
+            x = input("Enter first pair: ")  # '(a,b),(b,c),(c,d),(d,e)'
 
-            for tup in x.split('),('):
+            for tup in x.split("),("):
                 # tup looks like `(a,a` or `b,b`
-                tup = tup.replace(')', '').replace('(', '')
+                tup = tup.replace(")", "").replace("(", "")
                 # tup looks like `a,a` or `b,b`
-                user_plugboard.append(tuple(tup.split(',')))
+                user_plugboard.append(tuple(tup.split(",")))
 
         self.plugboard_chosen = user_plugboard
 
@@ -176,7 +172,6 @@ class Plugboard:
 
 
 class Rotors:
-
     def __init__(self, rotors, first_rotor, mid_rotor, last_rotor):
         self.first_rotor = first_rotor
         self.mid_rotor = mid_rotor
@@ -199,14 +194,12 @@ class Rotors:
     def starting_point(self, rotors, r1, r2, r3):
 
         # take user input for the starting letter in the first rotor
-        r1 = input(
-            'Enter the first letter for the starting point: ')
+        r1 = input("Enter the first letter for the starting point: ")
 
         # validation if char not in list
         while r1 not in rotors[0]:
             print("Enter any alphabet characet or a number form 0-9 ONLY.")
-            r1 = input(
-                'Enter the first letter for the starting point: ')
+            r1 = input("Enter the first letter for the starting point: ")
         # change the letter to its index
         starting_letter = rotors[0].index(r1)
 
@@ -214,13 +207,11 @@ class Rotors:
         for i in range(starting_letter):
             rotors[0].append(rotors[0].pop(0))
 
-        r2 = input(
-            'Enter the second letter for the starting point: ')
+        r2 = input("Enter the second letter for the starting point: ")
 
         while r2 not in rotors[1]:
             print("Enter any alphabet characet or a number form 0-9 ONLY.")
-            r2 = input(
-                'Enter the first letter for the starting point: ')
+            r2 = input("Enter the first letter for the starting point: ")
 
         starting_letter = rotors[1].index(r2)
 
@@ -228,14 +219,12 @@ class Rotors:
         for i in range(starting_letter):
             rotors[1].append(rotors[1].pop(0))
 
-        r3 = input(
-            'Enter the third letter for the starting point: ')
+        r3 = input("Enter the third letter for the starting point: ")
         starting_letter = rotors[2].index(r3)
 
         while r3 not in rotors[2]:
             print("Enter any alphabet characet or a number form 0-9 ONLY.")
-            r3 = input(
-                'Enter the first letter for the starting point: ')
+            r3 = input("Enter the first letter for the starting point: ")
 
         for i in range(starting_letter):
             # rotate the third rotor to the starting point
@@ -247,37 +236,37 @@ class Rotors:
 
     #  function to reset rotors to their original state
 
-    def reset(self):
-
+    def reset(self, rotors):
+        rotors = []
         # rotate first rotor till the first index is E
-        while rotorI[0] != 'E':
+        while rotorI[0] != "E":
             rotorI.append(rotorI.pop(0))
 
         # rotate second rotor till the first index is A
-        while rotorII[0] != 'A':
+        while rotorII[0] != "A":
             rotorII.append(rotorII.pop(0))
 
         # rotate third rotor till the first index is B
-        while rotorIII[0] != 'B':
+        while rotorIII[0] != "B":
             rotorIII.append(rotorIII.pop(0))
 
         # rotate fourth rotor till the first index is E
-        while rotorIV[0] != 'E':
+        while rotorIV[0] != "E":
             rotorIV.append(rotorIV.pop(0))
 
 
 class Reflector:
-
     def __init__(self, reflector):
         self.reflector = reflector
+
 
 # validation for integer inputs
 
 
-def INTvalidation(msg):
+def INTvalidation(text):
     while True:
         try:
-            Input_int = int(input(msg))
+            Input_int = int(input(text))
 
         except ValueError:
             print("\nInvalid, answer should be in numbers.")
@@ -288,6 +277,7 @@ def INTvalidation(msg):
 
 rotors = list()
 plugboard_chosen = int()
+msg = str()
 new_msg = str()
 first_rotor = ""
 mid_rotor = ""
@@ -297,36 +287,38 @@ Rotor_class = Rotors(rotors, first_rotor, mid_rotor, last_rotor)
 Plugboard_class = Plugboard(plugboard_chosen, new_msg)
 
 
-print("This is an enigma machine, please select what you need to do by inserting the corresponding number")
+print(
+    "This is an enigma machine, please select what you need to do by inserting the corresponding number"
+)
 
 selection = 0
-while(selection != 3):
+while selection != 3:
     print("\n1: Encode a Message ")
     print("2: Decode a Message ")
     print("3: Exit the program \n")
 
     selection = INTvalidation("\nEnter your selection: ")
     if selection == 1 or 2:
+        rotors = []
+        Rotor_class.reset(rotors)
 
-        Rotor_class.reset()
-        while rotors == []:
-            # take user input to choose the first rotor
-            first_rotor = INTvalidation('choose 1st rotor (ex: I): ')
-            Rotor_class.rotor_order(rotors, first_rotor)
+        # take user input to choose the first rotor
+        first_rotor = INTvalidation("choose 1st rotor (ex: I): ")
+        Rotor_class.rotor_order(rotors, first_rotor)
 
-            # take user input to choose the second rotor
-            mid_rotor = INTvalidation('choose 2nd rotor (ex: I): ')
-            Rotor_class.rotor_order(rotors, mid_rotor)
+        # take user input to choose the second rotor
+        mid_rotor = INTvalidation("choose 2nd rotor (ex: I): ")
+        Rotor_class.rotor_order(rotors, mid_rotor)
 
-            # take user input to choose the third rotor
-            last_rotor = INTvalidation('choose 3rd rotor (ex: I): ')
-            Rotor_class.rotor_order(rotors, last_rotor)
+        # take user input to choose the third rotor
+        last_rotor = INTvalidation("choose 3rd rotor (ex: I): ")
+        Rotor_class.rotor_order(rotors, last_rotor)
 
-            for elem in rotors:
-                if rotors.count(elem) > 1:
-                    rotors = []
-                    print("\nRotors can't be chosen twice. Please try again.")
-                    break
+        for elem in rotors:
+            if rotors.count(elem) > 1:
+                rotors = []
+                print("\nRotors can't be chosen twice. Please try again.")
+                break
 
         Rotor_class.starting_point(rotors, rotors[0], rotors[1], rotors[2])
 
@@ -342,11 +334,21 @@ while(selection != 3):
 
             if ans == 1:
                 Plugboard_class.plugboard_choice(plugboard_chosen)
-                msg = input("Enter your Message: ")
+                print("1. Type a message")
+                print("2. Import a file")
+
+                msg_type = INTvalidation("Choose one from the above: ")
+                if msg_type == 1:
+                    msg = input("Enter your Message: ")
+                elif msg_type == 2:
+                    file_name = input("enter name: ")
+                    open(file_name, "r")
+
+                    with open(file_name) as f:
+                        msg = f.read()
 
                 Plugboard_class.plugboard_settings(msg)
-                Enigma_mahcine = Enigma(
-                    rotors, reflectorB, Plugboard_class)
+                Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
 
                 Enigma_mahcine.encode(msg)
                 cipher = Enigma_mahcine.get_ciphered_msg()
@@ -356,11 +358,21 @@ while(selection != 3):
 
             elif ans == 2:
                 Plugboard_class.plugboard_configure()
-                msg = input("Enter your Message: ")
+                print("1. Type a message")
+                print("2. Import a file")
+
+                msg_type = INTvalidation("Choose one from the above: ")
+                if msg_type == 1:
+                    msg = input("Enter your Message: ")
+                elif msg_type == 2:
+                    file_name = input("enter name: ")
+                    open(file_name, "r")
+
+                    with open(file_name) as f:
+                        msg = f.read()
 
                 Plugboard_class.plugboard_settings(msg)
-                Enigma_mahcine = Enigma(
-                    rotors, reflectorB, Plugboard_class)
+                Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)
 
                 Enigma_mahcine.encode(msg)
 
@@ -370,8 +382,18 @@ while(selection != 3):
                 print(Plugboard_class.get_new_msg())
 
         else:
+            print("1. Type a message")
+            print("2. Import a file")
 
-            msg = input("Enter your Message: ")
+            msg_type = INTvalidation("Choose one from the above: ")
+            if msg_type == 1:
+                msg = input("Enter your Message: ")
+            elif msg_type == 2:
+                file_name = input("enter name: ")
+                open(file_name, "r")
+
+                with open(file_name) as f:
+                    msg = f.read()
 
             Plugboard_class.plugboard_default(msg)
             Enigma_mahcine = Enigma(rotors, reflectorB, Plugboard_class)

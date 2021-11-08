@@ -4,17 +4,21 @@ from plugboard import *
 
 
 class Enigma:
-    def __init__(self, rotors=[], msg="", cipher=""):
+    def __init__(self, rotors=[], reflector=[], reflector_map=[], msg="", cipher=""):
         self.rotors = rotors
-        self.reflector = reflectorB
+        self.reflector = reflector
+        self.reflector_map = reflector_map
         self.msg = msg
         self.cipher = cipher
 
     def set_rotors(self, rotors):
         self.rotors = rotors
 
-    def set_reflector(self):
-        self.reflector = reflectorB
+    def set_reflector(self, reflector):
+        self.reflector = reflector
+
+    def set_reflector_map(self, reflector_map):
+        self.reflector_map = reflector_map
 
     def set_msg(self, msg):
         self.msg = msg
@@ -24,6 +28,9 @@ class Enigma:
 
     def get_reflector(self):
         return self.reflector
+
+    def get_reflector_map(self):
+        return self.reflector_map
 
     def get_msg(self):
         return self.msg
@@ -67,7 +74,7 @@ class Enigma:
                 encrypted = reflectorB[index]
 
                 # check the mapping of the letter in the reflection
-                for x in reflectorB_map:
+                for x in self.reflector_map:
                     if x[0] == encrypted:
                         encrypted = x[1]
 
@@ -134,7 +141,7 @@ class Plugboard:
 
     # user chooses from 3 plugboards
     def plugboard_choice(self):
-        plugboard = INTvalidation("choose your plugboard (29, 30, 31): ")
+        plugboard = INTvalidation("\nchoose your plugboard (29, 30, 31): ")
         while plugboard not in range(29, 32):
             print("\nYou can enter from 29 to 31 ONLY.")
             plugboard = INTvalidation("choose your plugboard (29, 30, 31): ")
@@ -144,14 +151,12 @@ class Plugboard:
             self.plugboard_chosen = plugboard30
         elif plugboard == 31:
             self.plugboard_chosen = plugboard31
-        else:
-            print("invalid choice")
 
     # user configures their own plugboard
     def plugboard_configure(self):
         user_plugboard = []
 
-        count = INTvalidation("How many pairings will you configure? ")
+        count = INTvalidation("\nHow many pairings will you configure? ")
 
         for i in range(count):
             x = input("Enter first pair: ")  # '(a,b),(b,c),(c,d),(d,e)'
@@ -213,6 +218,10 @@ class Rotors:
         while self.rotors == []:
             for i in range(3):
                 rotor = INTvalidation("choose rotor {}: ".format(i + 1))
+                while rotor not in range(1, 6):
+                    print("\nInvalid. You can only choose from 1 to 5 rotors.")
+                    rotor = INTvalidation("choose rotor {}: ".format(i + 1))
+
                 if rotor == 1:
                     self.rotors.append(rotorI)
                 elif rotor == 2:
@@ -221,8 +230,6 @@ class Rotors:
                     self.rotors.append(rotorIII)
                 elif rotor == 4:
                     self.rotors.append(rotorIV)
-                else:
-                    print("choice is invalid")
 
             for elem in self.rotors:
                 if self.rotors.count(elem) > 1:
@@ -236,10 +243,8 @@ class Rotors:
             start = input("Enter the starting point of rotor {}: ".format(i + 1))
 
             while start not in self.rotors[i]:
-                print("Enter any alphabet characet or a number form 0-9 ONLY.")
-                start = input(
-                    "Enter the staring starting point of rotor {}: ".format(i + 1)
-                )
+                print("\nEnter one alphabet characet or a number form 0-9 ONLY.")
+                start = input("Enter the starting point of rotor {}: ".format(i + 1))
 
             # change the letter to its index
             starting_letter = self.rotors[i].index(start)
@@ -273,15 +278,52 @@ class Rotors:
             rotorIV.append(rotorIV.pop(0))
 
 
+class Reflector:
+    def __init__(self, reflector=[], reflector_map=[]):
+        self.reflector = reflector
+        self.reflector_map = reflector_map
+
+    def reflector_choice(self):
+        reflector = input("Choose a reflector (A, B, or C): ")
+
+        while reflector.upper() not in ("A", "B", "C"):
+            print("Invalid. You can only enter A, B, or C.")
+            reflector = input("Choose a reflector (A, B, or C): ")
+
+        if reflector.upper() == "A":
+            self.reflector = reflectorA
+            self.reflector_map = reflectorA_map
+        elif reflector.upper() == "B":
+            self.reflector = reflectorB
+            self.reflector_map = reflectorB_map
+        elif reflector.upper() == "C":
+            self.reflector = reflectorC
+            self.reflector_map = reflectorC_map
+
+    def get_reflector(self):
+        return self.reflector
+
+    def get_reflector_map(self):
+        return self.reflector_map
+
+
 # saves the output in a txt file
 def save_output():
-    save_output = input("do you want to save the output in a text file? ")
-    if save_output == "y":
-        file_name = input("enter name: ")
-        file = open(file_name, "w")
 
-        file.write(Enigma_class.get_cipher())
-        file.close()
+    save_output = input("\nDo you want to save the output in a text file (y/n)? ")
+
+    while save_output.lower() not in ("yes", "y", "no", "n"):
+        print("Invalid. You can only answer with yes, y, no, or n.")
+        save_output = input("\nDo you want to save the output in a text file (y/n)? ")
+
+        if save_output.lower() in ("yes", "y"):
+            file_name = input("\Enter your file name: ")
+            file = open(file_name, "w")
+
+            file.write(Enigma_class.get_cipher())
+            file.close()
+        else:
+            pass
 
 
 # validation for integer inputs
@@ -300,11 +342,12 @@ def INTvalidation(text):
 Enigma_class = Enigma()
 Rotor_class = Rotors(first_rotor=[], mid_rotor=[], last_rotor=[])
 Plugboard_class = Plugboard()
+Reflector_class = Reflector()
 
 
-def __main__():
+if __name__ == "__main__":
     print(
-        "This is an enigma machine, please select what you need to do by inserting the corresponding number"
+        "\nThis is an enigma machine, please select what you need to do by inserting the corresponding number"
     )
 
     selection = 0
@@ -321,54 +364,77 @@ def __main__():
             print(Plugboard_class.get_new_msg())
 
             Rotor_class.rotor_order()
+            print(" ")
+
+            Reflector_class.reflector_choice()
+            print(" ")
             Rotor_class.starting_point()
 
             Rotor_class.set_first_rotor()
             Rotor_class.set_mid_rotor()
             Rotor_class.set_last_rotor()
 
-            x = Rotor_class.get_rotors()
-            Enigma_class.set_rotors(x)
+            rot = Rotor_class.get_rotors()
+            Enigma_class.set_rotors(rot)
+
+            ref = Reflector_class.get_reflector()
+            Enigma_class.set_reflector(ref)
+
+            ref_map = Reflector_class.get_reflector_map()
+            Enigma_class.set_reflector_map(ref_map)
+
+            print(Enigma_class.get_reflector())
+            print(Enigma_class.get_reflector_map())
 
             # plugboard usage
-            x = input("Do you want to use a plugboard (yes or no)? ")
-            if x.lower() == "yes":
-                print("\n1: Choose a preset plugboard ")
-                print("2: Configure a plugboard\n")
+            x = input("\nDo you want to use a plugboard (y/n)? ")
+            while x.lower() not in ("yes", "y", "no", "n"):
+                print("Invalid. You can only answer with yes, y, no, or n.")
+                x = input("\nDo you want to use a plugboard (y/n)? ")
 
-                ans = INTvalidation("Choose one from the above: ")
+            if x.lower() in ("yes", "y"):
+                print("\n1: Choose a preset plugboard ")
+                print("2: Configure a plugboard")
+
+                ans = INTvalidation("\nChoose one from the above: ")
                 while ans not in range(1, 3):
                     print("\nInvalide. You can only choose either 1 or 2.")
                     ans = INTvalidation("Choose one from the above: ")
 
                 if ans == 1:
                     Plugboard_class.plugboard_choice()
-                    print(Plugboard_class.get_plugboard_chosen())
 
                 elif ans == 2:
                     Plugboard_class.plugboard_configure()
-                    print(Plugboard_class.get_plugboard_chosen())
-
             else:
-                print(Plugboard_class.get_plugboard_chosen())
+                pass
 
-            print("1. Type a message")
+            print("\n1. Type a message")
             print("2. Import a file")
 
-            msg_type = INTvalidation("Choose one from the above: ")
+            msg_type = INTvalidation("\nChoose one from the above: ")
             while msg_type not in range(1, 3):
                 print("\nInvalide. You can only choose either 1 or 2.")
                 msg_type = INTvalidation("Choose one from the above: ")
 
             if msg_type == 1:
-                msg = input("Enter your Message: ")
+                msg = input("\nEnter your Message: ")
             elif msg_type == 2:
-                file_name = input("Enter your file name: ")
-                open(file_name, "r")
+                while True:
 
-                with open(file_name) as f:
-                    msg = f.read()
-                    f.close()
+                    try:
+                        file_name = input("\nEnter your file name: ")
+                        open(file_name, "r")
+
+                        with open(file_name) as f:
+                            msg = f.read()
+                            f.close()
+
+                    except FileNotFoundError:
+                        print("File not found. Please try another filename.")
+                        continue
+                    else:
+                        break
 
             Plugboard_class.plugboard_settings(msg)
 
@@ -387,7 +453,4 @@ def __main__():
         elif selection == 3:
             quit()
         else:
-            print("Invalid. Please choose a number from 1 to 3.")
-
-
-__main__()
+            print("\nInvalid. Please choose a number from 1 to 3.")

@@ -139,6 +139,31 @@ class Plugboard:
     def get_new_msg(self):
         return self.new_msg
 
+    # wether the user wants to use a plugboard or not
+    def plugboard_usage(self):
+
+        x = input("\nDo you want to use a plugboard (y/n)? ")
+        while x.lower() not in ("yes", "y", "no", "n"):
+            print("Invalid. You can only answer with yes, y, no, or n.")
+            x = input("\nDo you want to use a plugboard (y/n)? ")
+
+        if x.lower() in ("yes", "y"):
+            print("\n1: Choose a preset plugboard ")
+            print("2: Configure a plugboard")
+
+            ans = INTvalidation("\nChoose one from the above: ")
+            while ans not in range(1, 3):
+                print("\nInvalide. You can only choose either 1 or 2.")
+                ans = INTvalidation("Choose one from the above: ")
+
+            if ans == 1:
+                self.plugboard_choice()
+
+            elif ans == 2:
+                self.plugboard_configure()
+        else:
+            pass
+
     # user chooses from 3 plugboards
     def plugboard_choice(self):
         plugboard = INTvalidation("\nchoose your plugboard (29, 30, 31): ")
@@ -358,10 +383,9 @@ if __name__ == "__main__":
 
         selection = INTvalidation("\nEnter your selection: ")
         if selection in range(1, 3):
-            # reset rotors with every input
+            # reset rotors, empty msg with every input
             Rotor_class.reset()
             Plugboard_class.set_new_msg("")
-            print(Plugboard_class.get_new_msg())
 
             Rotor_class.rotor_order()
             print(" ")
@@ -374,41 +398,20 @@ if __name__ == "__main__":
             Rotor_class.set_mid_rotor()
             Rotor_class.set_last_rotor()
 
+            # pass the rotors chosen to the enigma class
             rot = Rotor_class.get_rotors()
             Enigma_class.set_rotors(rot)
 
+            # pass the reflector chosen to the enigma class
             ref = Reflector_class.get_reflector()
             Enigma_class.set_reflector(ref)
 
             ref_map = Reflector_class.get_reflector_map()
             Enigma_class.set_reflector_map(ref_map)
 
-            print(Enigma_class.get_reflector())
-            print(Enigma_class.get_reflector_map())
+            Plugboard_class.plugboard_usage()
 
-            # plugboard usage
-            x = input("\nDo you want to use a plugboard (y/n)? ")
-            while x.lower() not in ("yes", "y", "no", "n"):
-                print("Invalid. You can only answer with yes, y, no, or n.")
-                x = input("\nDo you want to use a plugboard (y/n)? ")
-
-            if x.lower() in ("yes", "y"):
-                print("\n1: Choose a preset plugboard ")
-                print("2: Configure a plugboard")
-
-                ans = INTvalidation("\nChoose one from the above: ")
-                while ans not in range(1, 3):
-                    print("\nInvalide. You can only choose either 1 or 2.")
-                    ans = INTvalidation("Choose one from the above: ")
-
-                if ans == 1:
-                    Plugboard_class.plugboard_choice()
-
-                elif ans == 2:
-                    Plugboard_class.plugboard_configure()
-            else:
-                pass
-
+            # msg type
             print("\n1. Type a message")
             print("2. Import a file")
 
@@ -429,22 +432,24 @@ if __name__ == "__main__":
                         with open(file_name) as f:
                             msg = f.read()
                             f.close()
-
+                    # error handling
                     except FileNotFoundError:
                         print("File not found. Please try another filename.")
                         continue
                     else:
                         break
 
+            # send msg plugboard, incase it was used
             Plugboard_class.plugboard_settings(msg)
 
+            # pass msg from plugboard class to enigma class
             new_msg = Plugboard_class.get_new_msg()
             Enigma_class.set_msg(new_msg)
 
             Enigma_class.encode()
 
+            # return msg to plugboard
             cipher = Enigma_class.get_cipher()
-
             Plugboard_class.plugboard_settings(cipher)
 
             print(Plugboard_class.get_new_msg())

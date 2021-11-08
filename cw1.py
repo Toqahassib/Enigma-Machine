@@ -184,7 +184,8 @@ class Plugboard:
         count = INTvalidation("\nHow many pairings will you configure? ")
 
         for i in range(count):
-            x = input("Enter first pair: ")  # '(a,b),(b,c),(c,d),(d,e)'
+            # '(a,b),(b,c),(c,d),(d,e)'
+            x = input("Enter pair {}: ".format(i + 1))
 
             for tup in x.split("),("):
                 # tup looks like `(a,a` or `b,b`
@@ -255,6 +256,8 @@ class Rotors:
                     self.rotors.append(rotorIII)
                 elif rotor == 4:
                     self.rotors.append(rotorIV)
+                elif rotor == 5:
+                    self.rotors.append(rotorV)
 
             for elem in self.rotors:
                 if self.rotors.count(elem) > 1:
@@ -265,11 +268,13 @@ class Rotors:
     def starting_point(self):
 
         for i in range(3):
-            start = input("Enter the starting point of rotor {}: ".format(i + 1))
+            start = input(
+                "Enter the starting point of rotor {}: ".format(i + 1))
 
             while start not in self.rotors[i]:
                 print("\nEnter one alphabet characet or a number form 0-9 ONLY.")
-                start = input("Enter the starting point of rotor {}: ".format(i + 1))
+                start = input(
+                    "Enter the starting point of rotor {}: ".format(i + 1))
 
             # change the letter to its index
             starting_letter = self.rotors[i].index(start)
@@ -335,20 +340,23 @@ class Reflector:
 # saves the output in a txt file
 def save_output():
 
-    save_output = input("\nDo you want to save the output in a text file (y/n)? ")
+    save_output = input(
+        "\nDo you want to save the output in a text file (y/n)? ")
 
     while save_output.lower() not in ("yes", "y", "no", "n"):
         print("Invalid. You can only answer with yes, y, no, or n.")
-        save_output = input("\nDo you want to save the output in a text file (y/n)? ")
+        save_output = input(
+            "\nDo you want to save the output in a text file (y/n)? ")
 
-        if save_output.lower() in ("yes", "y"):
-            file_name = input("\Enter your file name: ")
-            file = open(file_name, "w")
+    if save_output.lower() in ("yes", "y"):
+        file_name = input("Enter your file name: ")
+        file = open(file_name, "w")
 
-            file.write(Enigma_class.get_cipher())
-            file.close()
-        else:
-            pass
+        file.write(Enigma_class.get_cipher())
+        file.close()
+        print("\nFile saved Successfully!")
+    else:
+        pass
 
 
 # validation for integer inputs
@@ -452,7 +460,7 @@ if __name__ == "__main__":
             cipher = Enigma_class.get_cipher()
             Plugboard_class.plugboard_settings(cipher)
 
-            print(Plugboard_class.get_new_msg())
+            print("\nResult: ", Plugboard_class.get_new_msg())
             save_output()
 
         elif selection == 3:

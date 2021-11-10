@@ -11,41 +11,46 @@ class Enigma:
         self.msg = msg
         self.cipher = cipher
 
+    # sets the 3 rotors in a list
     def set_rotors(self, rotors):
         self.rotors = rotors
 
+    # sets the reflector
     def set_reflector(self, reflector):
         self.reflector = reflector
 
+    # sets the reflector_map
     def set_reflector_map(self, reflector_map):
         self.reflector_map = reflector_map
 
+    # sets the message that will get encrypted/decrypted
     def set_msg(self, msg):
         self.msg = msg
 
+    # returns the list of rotors
     def get_rotors(self):
         return self.rotors
 
+    # returns the reflector
     def get_reflector(self):
         return self.reflector
 
+    # returns the reflector_map
     def get_reflector_map(self):
         return self.reflector_map
 
-    def get_msg(self):
-        return self.msg
-
+    # returns ciphered message
     def get_cipher(self):
         return self.cipher
 
+    # function to cipher/decipher the message
     def encode(self):
-        # set rotor rotations to 0
+        # set rotor rotations to 0 and empty the cipher text
         self.rotor1_rotation = 0
         self.rotor2_rotation = 0
-        self.rotor3_rotation = 0
         self.cipher = ""
 
-        # take input from user
+        # for loop to cipher/decipher the message letter by letter
         for i in range(len(self.msg)):
             # return any character that is not an alphabetic nor a num as is
             if not self.msg[i].isalnum():
@@ -55,25 +60,25 @@ class Enigma:
                 # rotate the rotors after every letter
                 self.rotation()
 
-                # take the index of the first letter of the msg in the alphabet list
+                # set the index as the letter's index in the alphabet list
                 index = alphabet.index(self.msg[i])
-                # correspond it to the letter in the first rotor
+                # set the encrypted letter as the index's letter in the 1st rotor
                 encrypted = self.rotors[0][index]
 
-                # change the index to the coresponding letter in the alphabet list
+                # change the index to the encrypted letter's index in the alphabet list
                 index = alphabet.index(encrypted)
-                # correspond it to the letter in the second rotor
+                # change the encrypted letter as the index's letter in the 2nd rotor
                 encrypted = self.rotors[1][index]
 
                 index = alphabet.index(encrypted)
-                # correspond it to the letter in the third rotor
+                # change the encrypted letter as the index's letter in the 3rd rotor
                 encrypted = self.rotors[2][index]
 
                 index = alphabet.index(encrypted)
-                # correspond it to the letter in the reflector
+                # change the encrypted letter as the index's letter in the reflector
                 encrypted = reflectorB[index]
 
-                # check the mapping of the letter in the reflection
+                # for loop to check the mapping of the letter in the reflector
                 for x in self.reflector_map:
                     if x[0] == encrypted:
                         encrypted = x[1]
@@ -81,16 +86,16 @@ class Enigma:
                     elif x[1] == encrypted:
                         encrypted = x[0]
 
-                # change the index to the coresponding letter in the refelector list
+                # change the index to the encrypted letter's index in the reflector
                 index = reflectorB.index(encrypted)
-                # correspond it to the letter in the alphabet
+                # change the encrypted letter as the index's letter in the alphabet list
                 encrypted = alphabet[index]
 
-                # change the index to the coresponding letter in the third rotor
+                # change the index to the encrypted letter's index in the 3rd rotor
                 index = self.rotors[2].index(encrypted)
-                # correspond it to the letter in the second rotor
+                # change the encrypted letter as the index's letter in the 3rd rotor
                 encrypted = self.rotors[2][index]
-                # correspond it to the letter in the alphabet list
+                # change the encrypted letter as the index's letter in the alphabet list
                 encrypted = alphabet[index]
 
                 index = self.rotors[1].index(encrypted)
@@ -100,9 +105,10 @@ class Enigma:
                 index = self.rotors[0].index(encrypted)
                 encrypted = self.rotors[0][index]
                 encrypted = alphabet[index]
-                # adds letter by letter to the encoded msg
+                # add letter by letter to the ciphered msg
                 self.cipher += encrypted
 
+    # function to ratate the rotors
     def rotation(self):
         # rotation of rotor1
         Rotors.rotate(self, 0)
@@ -113,7 +119,7 @@ class Enigma:
         # rotate rotor2 after full rotation of rotor1
         if self.rotor1_rotation == 60:
             Rotors.rotate(1)
-            # reset the inrimintation
+            # reset the incrimination
             self.rotor1_rotation = 0
             # incriminate after each letter in rotor2
             self.rotor2_rotation += 1
@@ -125,21 +131,24 @@ class Enigma:
 
 
 class Plugboard:
-    # pass through plug board
+
     def __init__(self, plugboard_chosen=[], new_msg=""):
         self.plugboard_chosen = plugboard_chosen
         self.new_msg = new_msg
 
+    # sets the new msg after it passed from the plugboard
     def set_new_msg(self, new_msg):
         self.new_msg = new_msg
 
+    # sets the chosen plugboard
     def get_plugboard_chosen(self):
         return self.plugboard_chosen
 
+    # returns the new msg
     def get_new_msg(self):
         return self.new_msg
 
-    # wether the user wants to use a plugboard or not
+    # function to know wether the user wants to use a plugboard or not
     def plugboard_usage(self):
 
         x = input("\nDo you want to use a plugboard (y/n)? ")
@@ -164,9 +173,9 @@ class Plugboard:
         else:
             pass
 
-    # user chooses from 3 plugboards
+    # function to let users choose 1 plugboard from 3
     def plugboard_choice(self):
-        plugboard = INTvalidation("\nchoose your plugboard (29, 30, 31): ")
+        plugboard = INTvalidation("\nChoose your plugboard (29, 30, 31): ")
         while plugboard not in range(29, 32):
             print("\nYou can enter from 29 to 31 ONLY.")
             plugboard = INTvalidation("choose your plugboard (29, 30, 31): ")
@@ -177,32 +186,31 @@ class Plugboard:
         elif plugboard == 31:
             self.plugboard_chosen = plugboard31
 
-    # user configures their own plugboard
+    # function to let users configure their own plugboard
     def plugboard_configure(self):
         user_plugboard = []
 
         count = INTvalidation("\nHow many pairings will you configure? ")
+        print("\nExample:\nEnter pair 1: a,e\n")
 
+        # for loop to append the input as tuples in a list
         for i in range(count):
-            # '(a,b),(b,c),(c,d),(d,e)'
+
             x = input("Enter pair {}: ".format(i + 1))
 
-            for tup in x.split("),("):
-                # tup looks like `(a,a` or `b,b`
-                tup = tup.replace(")", "").replace("(", "")
-                # tup looks like `a,a` or `b,b`
-                user_plugboard.append(tuple(tup.split(",")))
+            user_plugboard.append(tuple(x.split(",")))
 
+        print("You have succussfully configured the plugboard!")
         self.plugboard_chosen = user_plugboard
 
-    # pairing function
+    # function to pair the letters
     def plugboard_settings(self, msg):
         # convert the msg characters to a list
         list_msg = list(msg)
 
         for i in range(len(msg)):
             for x in self.plugboard_chosen:
-                # swap the character with it's pairing
+                # swap the character with it's pair
                 if list_msg[i] == x[0]:
                     list_msg[i] = x[1]
                 elif list_msg[i] == x[1]:
@@ -217,33 +225,29 @@ class Rotors:
         self.last_rotor = last_rotor
         self.rotors = []
 
+    # sets the 1st rotor
     def set_first_rotor(self):
         self.first_rotor = self.rotors[0]
 
+    # sets the 2nd rotor
     def set_mid_rotor(self):
         self.mid_rotor = self.rotors[1]
 
+    # sets the 3rd rotor
     def set_last_rotor(self):
         self.last_rotor = self.rotors[2]
 
-    def get_first_rotor(self):
-        return self.first_rotor
-
-    def get_mid_rotor(self):
-        return self.mid_rotor
-
-    def get_last_rotor(self):
-        return self.last_rotor
-
+    # returns all 3 rotors in a list
     def get_rotors(self):
         return self.rotors
 
-    # orders the rotors based on user input
+    # function to let users choose 3 rotors in order
     def rotor_order(self):
 
         while self.rotors == []:
             for i in range(3):
-                rotor = INTvalidation("choose rotor {}: ".format(i + 1))
+                rotor = INTvalidation("Choose rotor {}: ".format(i + 1))
+                # while loop to make sure the user chooses a rotor from 1 to 5
                 while rotor not in range(1, 6):
                     print("\nInvalid. You can only choose from 1 to 5 rotors.")
                     rotor = INTvalidation("choose rotor {}: ".format(i + 1))
@@ -259,18 +263,21 @@ class Rotors:
                 elif rotor == 5:
                     self.rotors.append(rotorV)
 
+            # for loop to check for duplicated rotors
             for elem in self.rotors:
                 if self.rotors.count(elem) > 1:
                     self.rotors = []
                     print("\nRotors can't be chosen twice. Please try again.")
                     break
 
+    # function to let users choose the starting point of the 3 rotors
     def starting_point(self):
 
         for i in range(3):
             start = input(
                 "Enter the starting point of rotor {}: ".format(i + 1))
 
+            # while loop to ensure the user choose a character that is found in the rotor
             while start not in self.rotors[i]:
                 print("\nEnter one alphabet characet or a number form 0-9 ONLY.")
                 start = input(
@@ -279,31 +286,28 @@ class Rotors:
             # change the letter to its index
             starting_letter = self.rotors[i].index(start)
 
-            # rotate the first rotor to the starting point
+            # rotate the rotor to the starting point
             for x in range(starting_letter):
                 self.rotate(i)
 
+    # function to ratate any list
     def rotate(self, index):
-        # rotation of rotors function
+
         self.rotors[index].append(self.rotors[index].pop(0))
 
     #  function to reset rotors to their original state
-
     def reset(self):
         self.rotors = []
-        # rotate first rotor till the first index is E
+
         while rotorI[0] != "E":
             rotorI.append(rotorI.pop(0))
 
-        # rotate second rotor till the first index is A
         while rotorII[0] != "A":
             rotorII.append(rotorII.pop(0))
 
-        # rotate third rotor till the first index is B
         while rotorIII[0] != "B":
             rotorIII.append(rotorIII.pop(0))
 
-        # rotate fourth rotor till the first index is E
         while rotorIV[0] != "E":
             rotorIV.append(rotorIV.pop(0))
 
@@ -313,9 +317,11 @@ class Reflector:
         self.reflector = reflector
         self.reflector_map = reflector_map
 
+    # function to let users choose 1 reflector from 3
     def reflector_choice(self):
         reflector = input("Choose a reflector (A, B, or C): ")
 
+        # while loop to ensure users only choose reflector A,b, or C
         while reflector.upper() not in ("A", "B", "C"):
             print("Invalid. You can only enter A, B, or C.")
             reflector = input("Choose a reflector (A, B, or C): ")
@@ -330,14 +336,16 @@ class Reflector:
             self.reflector = reflectorC
             self.reflector_map = reflectorC_map
 
+    # returns the reflector
     def get_reflector(self):
         return self.reflector
 
+    # returns the reflector map
     def get_reflector_map(self):
         return self.reflector_map
 
 
-# saves the output in a txt file
+# function to save the output in a txt file
 def save_output():
 
     save_output = input(
@@ -359,7 +367,7 @@ def save_output():
         pass
 
 
-# validation for integer inputs
+# funcation to validate integer inputs
 def INTvalidation(text):
     while True:
         try:
@@ -390,6 +398,7 @@ if __name__ == "__main__":
         print("3: Exit the program \n")
 
         selection = INTvalidation("\nEnter your selection: ")
+        print(" ")
         if selection in range(1, 3):
             # reset rotors, empty msg with every input
             Rotor_class.reset()
@@ -430,9 +439,9 @@ if __name__ == "__main__":
 
             if msg_type == 1:
                 msg = input("\nEnter your Message: ")
+            # import a file
             elif msg_type == 2:
                 while True:
-
                     try:
                         file_name = input("\nEnter your file name: ")
                         open(file_name, "r")
@@ -440,6 +449,7 @@ if __name__ == "__main__":
                         with open(file_name) as f:
                             msg = f.read()
                             f.close()
+                            print("File imported successfully!")
                     # error handling
                     except FileNotFoundError:
                         print("File not found. Please try another filename.")
@@ -447,7 +457,7 @@ if __name__ == "__main__":
                     else:
                         break
 
-            # send msg plugboard, incase it was used
+            # send msg to plugboard, incase it was used
             Plugboard_class.plugboard_settings(msg)
 
             # pass msg from plugboard class to enigma class
@@ -460,7 +470,7 @@ if __name__ == "__main__":
             cipher = Enigma_class.get_cipher()
             Plugboard_class.plugboard_settings(cipher)
 
-            print("\nResult: ", Plugboard_class.get_new_msg())
+            print("\nResult:", Plugboard_class.get_new_msg())
             save_output()
 
         elif selection == 3:

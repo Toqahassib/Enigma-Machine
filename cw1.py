@@ -195,8 +195,24 @@ class Plugboard:
 
         # for loop to append the input as tuples in a list
         for i in range(count):
-
             x = input("Enter pair {}: ".format(i + 1))
+
+            # while loop to ensure the input format is correct
+            while True:
+                if len(x) != 3:
+                    print("Invalid input.")
+                    print("\nExample:\nEnter pair 1: a,e\n")
+
+                    x = input("Enter pair {}: ".format(i + 1))
+
+                elif len(x) == 3:
+                    if x[1] != ",":
+                        print("Invalid input.")
+                        print("\nExample:\nEnter pair 1: a,e\n")
+
+                        x = input("Enter pair {}: ".format(i + 1))
+                    else:
+                        break
 
             user_plugboard.append(tuple(x.split(",")))
 

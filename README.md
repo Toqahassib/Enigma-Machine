@@ -25,12 +25,12 @@ After cloning the repository, run the “cw1.py” file. Once the program starts
 2.	Choose a reflector.
 3.	Choose the starting point of the 3 rotors.
 4.	Choose whether you want to use a plugboard or not.
-                    a.If yes, choose whether you want a preset one or you want to configure one.
-                              i.If a preset one, you choose one.
-                              ii.If you want to configure one, you enter your pairings.
-5.	Choose whether you want to encrypt/decrypt a typed message or an imported file.
-                    a.If a typed message, enter your message.
-                    b.If an imported file, enter the file name.
-6.	Choose whether you want to save the output in a file or not.
-                    a.If yes, enter a filename.
+5.	          If yes, choose whether you want a preset one or you want to configure one.
+6.	                    If a preset one, you choose one.
+7.	                    If you want to configure one, you enter your pairings.
+8.	Choose whether you want to encrypt/decrypt a typed message or an imported file.
+9.	          If a typed message, enter your message.
+10.	          If an imported file, enter the file name.
+11.	Choose whether you want to save the output in a file or not.
+12.	          If yes, enter a filename.
 

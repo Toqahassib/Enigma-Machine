@@ -7,11 +7,11 @@ REPOSITORY’S ORGANIZATION
 The repository consists of 3 files.
 
 1.	cw1.py
-2.	          This is the main Enigma file. Users will run this file.
+	          This is the main Enigma file. Users will run this file.
 3.	plugboard.py
-4.	          Plugboards are stored in this file.
+	          Plugboards are stored in this file.
 5.	rotor.py
-6.	          Rotors and reflectors are stored in this file.
+	          Rotors and reflectors are stored in this file.
 
 PRE-REQUISITES
 Programming Language: Python

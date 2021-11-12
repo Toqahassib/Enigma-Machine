@@ -4,16 +4,14 @@ To start the program, open your cmd or terminal and change the current working d
 
 REPOSITORY’S ORGANIZATION
 
-The repository consists of 4 files.
+The repository consists of 3 files.
 
-1.	README.md
-          Contains information for the user about the code.
-2.	cw1.py
-          This is the main Enigma file. Users will run this file.
+1.	cw1.py
+2.	          This is the main Enigma file. Users will run this file.
 3.	plugboard.py
-          Plugboards are stored in this file.
+4.	          Plugboards are stored in this file.
 5.	rotor.py
-          Rotors and reflectors are stored in this file.
+6.	          Rotors and reflectors are stored in this file.
 
 PRE-REQUISITES
 Programming Language: Python

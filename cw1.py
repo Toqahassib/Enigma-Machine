@@ -190,7 +190,13 @@ class Plugboard:
     def plugboard_configure(self):
         user_plugboard = []
 
-        count = INTvalidation("\nHow many pairings will you configure? ")
+        count = INTvalidation(
+            "\nHow many pairings will you configure (limit: 10)? ")
+        while count > 10:
+            print("Invalid, the limit of pairings is 10.")
+            count = INTvalidation(
+                "\nHow many pairings will you configure (limit: 10)? ")
+
         print("\nExample:\nEnter pair 1: a,e\n")
 
         # for loop to append the input as tuples in a list
@@ -252,6 +258,18 @@ class Rotors:
     # sets the 3rd rotor
     def set_last_rotor(self):
         self.last_rotor = self.rotors[2]
+
+        # sets the 1st rotor
+    def get_first_rotor(self):
+        return self.rotors[0]
+
+    # sets the 2nd rotor
+    def get_mid_rotor(self):
+        return self.rotors[1]
+
+    # sets the 3rd rotor
+    def get_last_rotor(self):
+        return self.rotors[2]
 
     # returns all 3 rotors in a list
     def get_rotors(self):
@@ -443,6 +461,28 @@ if __name__ == "__main__":
             Enigma_class.set_reflector_map(ref_map)
 
             Plugboard_class.plugboard_usage()
+
+            print("------------------------------------------------The Configured settings are------------------------------------------------")
+
+            if Plugboard_class.get_plugboard_chosen() == []:
+                print("\n-------------------------------------------------------Plugboard--------------------------------------------------------\n",
+                      "No Plugboard used.")
+            else:
+
+                print("\n-------------------------------------------------------Plugboard--------------------------------------------------------\n",
+                      Plugboard_class.get_plugboard_chosen())
+
+            print("\n---------------------------------------------------------Rotor1---------------------------------------------------------\n",
+                  Rotor_class.get_first_rotor())
+
+            print("\n---------------------------------------------------------Rotor2--------------------------------------------------------\n",
+                  Rotor_class.get_mid_rotor())
+
+            print("\n---------------------------------------------------------Rotor3-------------------------------------------------------\n",
+                  Rotor_class.get_last_rotor())
+
+            print("\n--------------------------------------------------------Reflector-----------------------------------------------------\n",
+                  Reflector_class.get_reflector())
 
             # msg type
             print("\n1. Type a message")

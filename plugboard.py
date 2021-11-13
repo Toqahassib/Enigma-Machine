@@ -1,9 +1,5 @@
 """ Plugboard pairings
 
-	Up to 10 alphabetic pairings could be made via physical wire connections.
-	This was the final component of the encryption before the accompanying lamp
-	would be lit for a keypress.
-
 	Taken from the 31st, 30th, and 29th from keylist #649, link below:
 	https://en.wikipedia.org/wiki/Enigma_machine#/media/File:Enigma_keylist_3_rotor.jpg
 """

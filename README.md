@@ -2,8 +2,6 @@
 
 To start the program, open your cmd or terminal and change the current working directory to the location where you want to clone the repository. Then clone the repo.
 
-REPOSITORY’S ORGANIZATION
-
 The repository consists of 3 files.
 
 1.	cw1.py:

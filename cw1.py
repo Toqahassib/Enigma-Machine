@@ -1,4 +1,4 @@
-# importing the rotors, reflectors and plugboard file
+# importing the rotors, reflectors and plugboard files
 from rotor import *
 from plugboard import *
 
@@ -113,12 +113,11 @@ class Enigma:
         # rotation of rotor1
         Rotors.rotate(self, 0)
 
-        # incriminate after each letter in rotor1
         self.rotor1_rotation += 1
 
         # rotate rotor2 after full rotation of rotor1
         if self.rotor1_rotation == 60:
-            Rotors.rotate(1)
+            Rotors.rotate(self, 1)
             # reset the incrimination
             self.rotor1_rotation = 0
             # incriminate after each letter in rotor2
@@ -127,7 +126,7 @@ class Enigma:
         # rotate rotor3 after full rotation of rotor2
         if self.rotor2_rotation == 60:
             self.rotor2_rotation = 0
-            Rotors.rotate(2)
+            Rotors.rotate(self, 2)
 
 
 class Plugboard:
@@ -140,7 +139,7 @@ class Plugboard:
     def set_new_msg(self, new_msg):
         self.new_msg = new_msg
 
-    # sets the chosen plugboard
+    # returns the chosen plugboard
     def get_plugboard_chosen(self):
         return self.plugboard_chosen
 
@@ -150,6 +149,8 @@ class Plugboard:
 
     # function to know wether the user wants to use a plugboard or not
     def plugboard_usage(self):
+
+        self.plugboard_chosen = []
 
         x = input("\nDo you want to use a plugboard (y/n)? ")
         while x.lower() not in ("yes", "y", "no", "n"):
@@ -259,15 +260,15 @@ class Rotors:
     def set_last_rotor(self):
         self.last_rotor = self.rotors[2]
 
-        # sets the 1st rotor
+    # returns the 1st rotor
     def get_first_rotor(self):
         return self.rotors[0]
 
-    # sets the 2nd rotor
+    # returns the 2nd rotor
     def get_mid_rotor(self):
         return self.rotors[1]
 
-    # sets the 3rd rotor
+    # returns the 3rd rotor
     def get_last_rotor(self):
         return self.rotors[2]
 
@@ -304,14 +305,14 @@ class Rotors:
                     print("\nRotors can't be chosen twice. Please try again.")
                     break
 
-    # function to let users choose the starting point of the 3 rotors
+    # function to choose the starting point of the 3 rotors
     def starting_point(self):
 
         for i in range(3):
             start = input(
                 "Enter the starting point of rotor {}: ".format(i + 1))
 
-            # while loop to ensure the user choose a character that is found in the rotor
+            # while loop to validate the character is found in the rotor
             while start not in self.rotors[i]:
                 print("\nEnter one alphabet characet or a number form 0-9 ONLY.")
                 start = input(
@@ -324,7 +325,7 @@ class Rotors:
             for x in range(starting_letter):
                 self.rotate(i)
 
-    # function to ratate any list
+    # function to ratate any rotor
     def rotate(self, index):
 
         self.rotors[index].append(self.rotors[index].pop(0))
@@ -351,11 +352,11 @@ class Reflector:
         self.reflector = reflector
         self.reflector_map = reflector_map
 
-    # function to let users choose 1 reflector from 3
+    # function to let users choose a reflector
     def reflector_choice(self):
         reflector = input("Choose a reflector (A, B, or C): ")
 
-        # while loop to ensure users only choose reflector A,b, or C
+        # while loop to validate the input is reflector A,b, or C
         while reflector.upper() not in ("A", "B", "C"):
             print("Invalid. You can only enter A, B, or C.")
             reflector = input("Choose a reflector (A, B, or C): ")
@@ -415,7 +416,7 @@ def INTvalidation(text):
 
 
 Enigma_class = Enigma()
-Rotor_class = Rotors(first_rotor=[], mid_rotor=[], last_rotor=[])
+Rotor_class = Rotors()
 Plugboard_class = Plugboard()
 Reflector_class = Reflector()
 
@@ -434,7 +435,7 @@ if __name__ == "__main__":
         selection = INTvalidation("\nEnter your selection: ")
         print(" ")
         if selection in range(1, 3):
-            # reset rotors, empty msg with every input
+            # reset rotors and msg
             Rotor_class.reset()
             Plugboard_class.set_new_msg("")
 
@@ -499,7 +500,7 @@ if __name__ == "__main__":
             elif msg_type == 2:
                 while True:
                     try:
-                        file_name = input("\nEnter your file name: ")
+                        file_name = input("\nEnter your text file name: ")
                         open(file_name, "r")
 
                         with open(file_name) as f:

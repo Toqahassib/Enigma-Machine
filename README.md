@@ -13,7 +13,7 @@ The repository consists of 5 files.
 
 
 PRE-REQUISITES
-Programming Language: Python
+Programming Language: Python 3.9.7
 
 HOW TO USE THE CODE?
 

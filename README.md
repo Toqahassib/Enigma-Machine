@@ -2,7 +2,7 @@
 
 To start the program, open your cmd or terminal and change the current working directory to the location where you want to clone the repository. Then clone the repo.
 
-The repository consists of 3 files.
+The repository consists of 5 files.
 
 1.	cw1.py: This is the main Enigma file. Users will run this file.
 3.	plugboard.py: Plugboards are stored in this file.

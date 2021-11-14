@@ -8,7 +8,7 @@ The repository consists of 3 files.
 3.	plugboard.py: Plugboards are stored in this file.
 5.	rotor.py: Rotors and reflectors are stored in this file.
 6.	test.txt: text file to test the import file feature
-7.	report.pdf: detailed report on the program
+7.	CW1_report.pdf: detailed report on the program
 		  
 
 

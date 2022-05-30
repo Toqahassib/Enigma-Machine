@@ -1,4 +1,4 @@
-# Programming_CW1
+# Enigma Machin Software
 
 To start the program, open your cmd or terminal and change the current working directory to the location where you want to clone the repository. Then clone the repo.
 
